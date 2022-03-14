@@ -1,12 +1,21 @@
 module Func
 def add_item
-    puts "What item would you like to add? Please use format 'add {food.container.description}'"
+    puts "What item would you like to add? Please use format 'add {food*container*description}'"
     print ">>"
     item_add = gets.chomp
+    item, container, desc = item_add.split("*")
+    item = item.upcase.to_sym
+    container = container.upcase.to_sym
+    p item, container
+    p desc
     
 end
 
-def add_item_convert( item, amount = 1, container = "undefined", desc = nil)
+def dev_tools
+    
+end
+
+def add_item_convert( item, amount = 1, container = :UNDEFINED, desc = nil)
     item.upcase.to_sym
 end
 
@@ -19,9 +28,9 @@ def help_prompt
 	if help_quit == "help"
 	    command_modifier = command_modifier.upcase.to_sym if command_modifier != nil
 	    case command_modifier
-		when ACTIONS[8]
+		when :QUIT
 		    puts "quits the current task you are doing right now, if you arent doing a task it exits the program"
-		when ACTIONS[7]
+		when :LIST
 		    puts "lists out the type of items you have in your freezer, and the amount of those items"
 		end
 	elsif help_quit == "quit"
@@ -29,6 +38,21 @@ def help_prompt
 	else
 	    puts "unknown command \"#{help_quit}\""
 	end
+    end
+end
+
+#done
+def purge_start(file)
+    puts "WARNING: purging will delete all info you could have possibly added, are you sure?"
+    print "[y/N]:"
+    purge = gets.chomp
+    if purge == "" or purge.downcase == "n"
+	puts "purge canceled"
+    elsif purge.downcase == "y"
+	file.truncate(0)
+	puts "contents purged"
+    else
+	puts "purge canceled, unknown option entered"
     end
 end
 
