@@ -1,6 +1,6 @@
 require_relative "FUNCTIONS.rb"
 include Func
-ACTIONS = [:ADD_ITEM,:ADD_ITEMS_LIST,:REMOVE_ITEM,:REMOVE_ITEMS_LIST,:PURGE,:UPDATE_TEST, :HELP, :LIST, :QUIT] #this is all the actions you can use
+ACTIONS = [:ADD_ITEM,:ADD_ITEMS_LIST,:REMOVE_ITEM,:REMOVE_ITEMS_LIST,:PURGE,:DEVTOOLS, :HELP, :LIST, :QUIT] #this is all the actions you can use
 CONTAINERS = [:NONE, :CAN, :BAG, :CARTON, :JUG, :GALLON, :PLASTIC_CONTAINER, :PC, 
 :STYROFOAM_CONTAINER, :SC, :BOX, :JAR, :UNDEFINED]
 $buffer = {:test => {:amount => 0, :container => :NONE, :description => 
@@ -11,7 +11,7 @@ and then add the items you have in your freezer."}}
 
 begin
     deep_freezer = File.open("contents.store", "r+")
-    contents = deep_freezer.read
+    contents = deep_freezer.readlines
 rescue Errno::ENOENT
     deep_freezer = File.new("contents.store", "w+")
 end
@@ -26,7 +26,7 @@ case user_in
     when :LIST
     when :HELP
 	help_prompt
-    when :DEV_TOOLS
+    when :DEVTOOLS
 	dev_tools
     when :PURGE
 	purge_start(deep_freezer)
