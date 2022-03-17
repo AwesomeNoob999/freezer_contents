@@ -1,26 +1,17 @@
 require_relative "FUNCTIONS.rb"
 include Func
 
-#todo: less global vars, expandability, make faster, possibly allow ability to read in scripts
+#todo: less global vars, expandability, make faster, possibly allow ability to read in scripts, add :DEVTOOLS back
 
-ACTIONS = [:ADD_ITEM,:ADD_ITEMS_LIST,:REMOVE_ITEM,:REMOVE_ITEMS_LIST,:PURGE,:DEVTOOLS, :HELP, :LIST, :QUIT, :SAVE] #this is all the actions you can use
+ACTIONS = [:ADD_ITEM,:ADD_ITEMS_LIST,:REMOVE_ITEM,:REMOVE_ITEMS_LIST,:PURGE, :HELP, :LIST, :QUIT, :SAVE] #this is all the actions you can use
 
 CONTAINERS = [:NONE, :CAN, :BAG, :CARTON, :JUG, :GALLON, :PLASTIC_CONTAINER, :PC, :STYROFOAM_CONTAINER, :SC, :BOX, :JAR, :UNDEFINED]
 
-$buffer = {
-    :test => {
-	:amount => 
-	    0,
-	:container => 
-	    :NONE, 
-	:description =>  
-	    "this is a test item that isnt in your freezer, if you are seeing this, you have probs just installed this app, and if that is true, you can probably just use :PURGE and then add the items you have in your freezer."}}
-
-
+$contents = [] 
 
 begin
-    deep_freezer = File.open("contents.store", "r+")
-    $contents = decrypt(deep_freezer.readlines)
+    deep_freezer = File.open("contents.store", "a+")
+    decrypt(deep_freezer.readlines)
 rescue Errno::ENOENT
     deep_freezer = File.new("contents.store", "w+")
 end
@@ -33,21 +24,24 @@ loop do
     user_in = user_input.upcase.gsub(" ", "_").to_sym
     case user_in
 	when :LIST
+	    p $contents
 	when :HELP
 	    help_prompt
-	when :DEVTOOLS
-	    dev_tools
+	#when :DEVTOOLS
+	#    dev_tools
 	when :PURGE
 	    purge_start(deep_freezer)
 	when :REMOVE_ITEMS_LIST
 	when :REMOVE_ITEM
 	when :ADD_ITEMS_LIST
+	    add_items_list
 	when :ADD_ITEM
 	    add_item
 	when :QUIT, :EXIT
-	    save
+	    save(deep_freezer)
+	    deep_freezer.close
 	    exit
 	when :SAVE
-	    save
+	    save(deep_freezer)
     end
 end

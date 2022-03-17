@@ -2,48 +2,43 @@ module Func
 def add_item
     puts "What item would you like to add? Please use format 'add {food*container*description}'"
     print ">>"
-    $devmode = true
-    $devmode ? item_add="apple*bag" : item_add = gets.chomp
+    item_add = gets.chomp # $devmode ? item_add="apple*bag" : 
     item, container, desc = item_add.split("*")
     item = item.upcase.to_sym
     container = container.upcase.to_sym
     pushed = []
-    pushed << item
-    pushed << container
-    pushed << 1
-    pushed << desc
-    $contents = [[:APPLE, :BAG, 9, nil]]
-    $contents << pushed
-    pushed[3] = "am"
-    e = 0
-    p $contents
+    pushed.push(item).push(1).push(container).push(desc)
     for thing in $contents
-	
+	if thing[0] == pushed[0] and thing[2] == pushed[2] and thing[3] == pushed[3]
+	    thing[1] += pushed[1]
+	    within = true
+	    break
+	end
     end
-    p pushed
-    p $contents
+    $contents << pushed if !within
+    within = false
 end
 
-def dev_tools
-    $devmode = true
-    help_prompt
-    #tests
-    $devmode = false
-end
+#def dev_tools
+#    $devmode = true
+#    help_prompt
+#    #tests
+#    $devmode = false
+#end
 
-def help_devtool
-    $iter += 1
-    m = "#{if $iter-1 < ACTIONS.size; "help" ;else "quit" end} #{if $iter - 1 <= ACTIONS.size; ACTIONS[$iter-1]; else "" end}"
-    puts "#{m}"
-    m
-end
+#def help_devtool
+#    $iter += 1
+#    m = "#{if $iter-1 < ACTIONS.size; "help" ;else "quit" end} #{if $iter - 1 <= ACTIONS.size; ACTIONS[$iter-1]; else "" end}"
+#    puts "#{m}"
+#    m
+#end
 
 def help_prompt
-    $iter = 0
+#    $iter = 0
     puts "what command would you like help with? Please use format 'help {command}'"
     loop do
 	print ">>"
-	$devmode ? help_input=help_devtool : help_input = gets.chomp
+	help_input = gets.chomp #	$devmode ? help_input=help_devtool : 
 	help_quit, command_modifier = help_input.split(" ")
 	if help_quit == "help"
 	    command_modifier = command_modifier.upcase.to_sym if command_modifier != nil
@@ -96,13 +91,18 @@ def purge_start(file)
 end
 
 def encrypt(buffer)
+    buff = []
+    p buffer
     for i in buffer
-	item = buffer.keys[0].to_s
-	value = buffer.values[0].values[0].to_s
-	container = buffer.values[0].values[1].to_s
-	desc = buffer.values[0].values[2]
-	"@#{item}*#{value}*{#{container}}*[#{desc}]"
+	item = i[0].to_s
+	value = i[1].to_s
+	container = i[2].to_s
+	desc = i[3]
+	p "@#{item}*#{value}*{#{container}}*[#{desc}]"
+	buff << "@#{item}*#{value}*{#{container}}*[#{desc}]"
     end
+    p buff
+    buff
 end
 
 def decrypt(freeze)
@@ -111,12 +111,49 @@ def decrypt(freeze)
 	item = item.sub("@","").to_sym
 	value = value.to_i
 	container = container.delete("{}").to_sym
-	desc = desc.delete("[]")
+	desc = desc.delete("[]\n")
+	desc = nil if desc == "" or desc == "\n"
+	p [item,value,container,desc]
+	$contents << [item,value,container,desc]
     end
 end
 
-def save
-    
+def add_items_list
+    puts "What item would you like to add? Please use format 'add {food*value*container*description}', leave the description field blank if there is none"
+    loop do
+	print ">>"
+	item_add = gets.chomp #$devmode ? item_add="add apple*7*bag" : 
+	item_add = item_add.sub(" ","!")
+	command, item_add = item_add.split("!")
+	command = command.upcase.to_sym
+	if command == :ADD
+	    item, value, container, desc = item_add.split("*")
+	    item = item.upcase.to_sym
+	    value = value.to_i
+	    container = container.upcase.to_sym
+	    pushed = []
+	    pushed.push(item).push(value).push(container).push(desc)
+	    for thing in $contents
+		if thing[0] == pushed[0] and thing[2] == pushed[2] and thing[3] == pushed[3]
+		    thing[1] += pushed[1]
+		    within = true
+		    break
+		end
+	    end
+	    $contents << pushed if !within
+	    within = false
+	elsif command == :QUIT
+	    break
+	end
+    end
+end
+
+def save(file)
+    file.truncate(0)
+    buffer = encrypt($contents)
+    for i in buffer
+	file.write(i+ "\n")
+    end
 end
 
 end
