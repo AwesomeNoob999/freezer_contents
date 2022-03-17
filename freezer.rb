@@ -1,6 +1,8 @@
 require_relative "FUNCTIONS.rb"
 include Func
 
+#todo: less global vars, expandability, make faster, possibly allow ability to read in scripts
+
 ACTIONS = [:ADD_ITEM,:ADD_ITEMS_LIST,:REMOVE_ITEM,:REMOVE_ITEMS_LIST,:PURGE,:DEVTOOLS, :HELP, :LIST, :QUIT, :SAVE] #this is all the actions you can use
 
 CONTAINERS = [:NONE, :CAN, :BAG, :CARTON, :JUG, :GALLON, :PLASTIC_CONTAINER, :PC, :STYROFOAM_CONTAINER, :SC, :BOX, :JAR, :UNDEFINED]
@@ -14,7 +16,7 @@ $buffer = {
 	:description =>  
 	    "this is a test item that isnt in your freezer, if you are seeing this, you have probs just installed this app, and if that is true, you can probably just use :PURGE and then add the items you have in your freezer."}}
 
-$to_write = []
+
 
 begin
     deep_freezer = File.open("contents.store", "r+")

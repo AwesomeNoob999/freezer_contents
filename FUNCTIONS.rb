@@ -2,11 +2,26 @@ module Func
 def add_item
     puts "What item would you like to add? Please use format 'add {food*container*description}'"
     print ">>"
+    $devmode = true
     $devmode ? item_add="apple*bag" : item_add = gets.chomp
     item, container, desc = item_add.split("*")
     item = item.upcase.to_sym
     container = container.upcase.to_sym
-    
+    pushed = []
+    pushed << item
+    pushed << container
+    pushed << 1
+    pushed << desc
+    $contents = [[:APPLE, :BAG, 9, nil]]
+    $contents << pushed
+    pushed[3] = "am"
+    e = 0
+    p $contents
+    for thing in $contents
+	
+    end
+    p pushed
+    p $contents
 end
 
 def dev_tools
@@ -73,6 +88,7 @@ def purge_start(file)
 	puts "purge canceled"
     elsif purge.downcase == "y"
 	file.truncate(0)
+	$contents = []
 	puts "contents purged"
     else
 	puts "purge canceled, unknown option entered"
@@ -80,11 +96,13 @@ def purge_start(file)
 end
 
 def encrypt(buffer)
-    item = buffer.keys[0].to_s
-    value = buffer.values[0].values[0].to_s
-    container = buffer.values[0].values[1].to_s
-    desc = buffer.values[0].values[2]
-    "@#{item}*#{value}*{#{container}}*[#{desc}]"
+    for i in buffer
+	item = buffer.keys[0].to_s
+	value = buffer.values[0].values[0].to_s
+	container = buffer.values[0].values[1].to_s
+	desc = buffer.values[0].values[2]
+	"@#{item}*#{value}*{#{container}}*[#{desc}]"
+    end
 end
 
 def decrypt(freeze)
@@ -92,7 +110,8 @@ def decrypt(freeze)
 	item, value, container, desc = thing.split("*")
 	item = item.sub("@","").to_sym
 	value = value.to_i
-	container = container.sub(/"{}"/)
+	container = container.delete("{}").to_sym
+	desc = desc.delete("[]")
     end
 end
 
