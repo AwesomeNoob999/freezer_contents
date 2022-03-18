@@ -1,8 +1,12 @@
 module Func
 def add_item
-    puts "What item would you like to add? Please use format 'add {food*container*description}'"
+    puts "What item would you like to add? Please use format 'add {food*container*description}', leave the description field blank if there is none"
     print ">>"
     item_add = gets.chomp # $devmode ? item_add="apple*bag" : 
+    command,item_add = item_add.sub(" ","!")
+    command = command.upcase.to_sym
+    case command
+    when :ADD
     item, container, desc = item_add.split("*")
     item = item.upcase.to_sym
     container = container.upcase.to_sym
@@ -17,6 +21,9 @@ def add_item
     end
     $contents << pushed if !within
     within = false
+    when :QUIT
+    break
+    end
 end
 
 #def dev_tools
