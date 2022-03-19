@@ -1,6 +1,6 @@
 # freezer_contents
 
-This is a small project i am making to learn more bout ruby, tho it will probs be expanded in the future <br />
+This is a mruby version of my main project <br />
 i plan to add the following features: <br />
 -Ability to read commands if from scripts <br />
 -Ability to make modules to expand the program <br />
