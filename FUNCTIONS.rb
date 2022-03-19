@@ -1,4 +1,4 @@
-module Func
+#module Func
 def add_item
     puts "What item would you like to add? Please use format 'add {food*container*description}', leave the description field blank if there is none"
     print ">>"
@@ -23,6 +23,13 @@ def add_item
     within = false
     when :QUIT
     break
+    end
+end
+
+def remove_items_list
+    puts "What items would you like to remove? Please use format 'remove {food*amount*container*description}', leave the description field blank if there is none"
+    loop do
+	break
     end
 end
 
@@ -99,16 +106,13 @@ end
 
 def encrypt(buffer)
     buff = []
-    p buffer
     for i in buffer
 	item = i[0].to_s
 	value = i[1].to_s
 	container = i[2].to_s
 	desc = i[3]
-	p "@#{item}*#{value}*{#{container}}*[#{desc}]"
 	buff << "@#{item}*#{value}*{#{container}}*[#{desc}]"
     end
-    p buff
     buff
 end
 
@@ -163,4 +167,4 @@ def save(file)
     end
 end
 
-end
+#end

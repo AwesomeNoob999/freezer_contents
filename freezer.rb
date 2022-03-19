@@ -1,5 +1,5 @@
-require_relative "FUNCTIONS.rb"
-include Func
+#require_relative "FUNCTIONS.rb"
+#include Func
 
 #todo: less global vars, expandability, make faster, possibly allow ability to read in scripts, add :DEVTOOLS back
 
@@ -40,7 +40,7 @@ loop do
 	when :QUIT, :EXIT
 	    save(deep_freezer)
 	    deep_freezer.close
-	    exit
+	    break
 	when :SAVE
 	    save(deep_freezer)
     end
